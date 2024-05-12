@@ -80,3 +80,11 @@
   background-color: #003a70; /* Even darker blue on hover */
   border-color: #002244;
 }
+
+.footer-container {
+  text-align: center; /* Center-align the content */
+}
+
+.footer-content {
+  display: inline-block; /* Keep the content in a block */
+}
