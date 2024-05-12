@@ -1,0 +1,70 @@
+/* Navbar Styles */
+.navbar {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.nav-link {
+  color: #ffffff !important; /* Use primary color for links */
+  transition: color 0.3s ease-in-out; /* Smooth transition for color change */
+}
+
+.navbar-brand {
+  color: #ffffff !important; /* White color for brand */
+  transition: color 0.3s ease-in-out; /* Smooth transition for brand color */
+}
+
+.navbar-brand:hover {
+  color: #ffffff !important; /* Maintain white color on hover */
+}
+
+/* Card Styles */
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: none; /* Remove default border */
+  margin-bottom: 20px; /* Add spacing at the bottom of each card */
+  background-color: #121212; /* Dark background for the card */
+}
+
+.card-title {
+  color: #007bff; /* Primary blue color for titles */
+  padding-bottom: 5%;
+  text-align: center;
+}
+
+.card-text {
+  padding-top: 5%;
+  padding-bottom: 5%;
+  text-align: center;
+}
+
+.card-body {
+  padding: 2rem;
+  color: #cccccc; /* Lighter text for readability on dark background */
+}
+
+/* Form Input Styles */
+.form-control {
+  border-radius: 0.25rem;
+  border: 1px solid #343a40; /* Darker borders for inputs */
+  background-color: #222222; /* Dark input backgrounds */
+  color: #ffffff; /* White text for contrast */
+  margin-bottom: 5%;
+}
+
+.form-control:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25); /* Blue glow on focus */
+}
+
+/* Button Styles */
+.btn-primary {
+  margin-top: 5%;
+  background-color: #0056b3; /* Slightly darker blue for buttons */
+  border-color: #004085;
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out; /* Smooth color transition */
+}
+
+.btn-primary:hover {
+  background-color: #003a70; /* Even darker blue on hover */
+  border-color: #002244;
+}
