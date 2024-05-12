@@ -1,6 +1,10 @@
 /* Navbar Styles */
 .navbar {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  font-family: "Quicksand", sans-serif;
+}
+.container {
+  font-family: "Quicksand", sans-serif;
 }
 
 .nav-link {
@@ -19,10 +23,13 @@
 
 /* Card Styles */
 .card {
+  margin-top: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: none; /* Remove default border */
   margin-bottom: 20px; /* Add spacing at the bottom of each card */
   background-color: #121212; /* Dark background for the card */
+  font-family: "Quicksand", sans-serif;
+  padding: 2%;
 }
 
 .card-title {
@@ -54,6 +61,11 @@
 .form-control:focus {
   border-color: #0056b3;
   box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25); /* Blue glow on focus */
+}
+.btn {
+  margin-top: 5%;
+  margin-bottom: 5%;
+  width: 100%;
 }
 
 /* Button Styles */

@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const response = await fetch(
-      "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/auth/register",
+      "https://api.spendsense.ca/api/auth/register",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -17,6 +19,7 @@ function Register() {
     );
     const data = await response.json();
     if (response.ok) {
+      navigate("/");
       console.log("Registration successful");
     } else {
       console.log(`Failed to register: ${data.error}`);

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Table } from "react-bootstrap";
 import { Pie } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
-import { Line } from "react-chartjs-2";
 import {
   Chart,
   BarElement,
@@ -57,14 +56,11 @@ function Dashboard() {
   };
 
   const fetchAccounts = async () => {
-    const response = await fetch(
-      "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/accounts",
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch("https://api.spendsense.ca/api/accounts", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     if (response.ok) {
       const data = await response.json();
       setAccounts(data);
@@ -74,14 +70,11 @@ function Dashboard() {
   };
 
   const fetchTransactions = async () => {
-    const response = await fetch(
-      "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/transactions",
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch("https://api.spendsense.ca/api/transactions", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     if (response.ok) {
       const data = await response.json();
       setTransactions(data);
@@ -92,12 +85,9 @@ function Dashboard() {
   };
 
   const fetchExpenses = async () => {
-    const response = await fetch(
-      "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/expenses",
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      }
-    );
+    const response = await fetch("https://api.spendsense.ca/api/expenses", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
     if (response.ok) {
       const data = await response.json();
       setExpenses(data);

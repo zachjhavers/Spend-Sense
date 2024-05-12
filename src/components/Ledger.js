@@ -30,14 +30,11 @@ function Ledger() {
   }, []);
 
   async function fetchAccounts() {
-    const response = await fetch(
-      "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/accounts",
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch("https://api.spendsense.ca/api/accounts", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.ok) {
       setAccounts(data);
@@ -47,14 +44,11 @@ function Ledger() {
   }
 
   async function fetchTransactions() {
-    const response = await fetch(
-      "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/transactions",
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch("https://api.spendsense.ca/api/transactions", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.ok) {
       setTransactions(data);
@@ -65,22 +59,19 @@ function Ledger() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await fetch(
-      "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/transactions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          accountId: selectedAccount,
-          amount: Number(amount),
-          type,
-          description,
-        }),
-      }
-    );
+    const response = await fetch("https://api.spendsense.ca/api/transactions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        accountId: selectedAccount,
+        amount: Number(amount),
+        type,
+        description,
+      }),
+    });
 
     if (response.ok) {
       console.log("Transaction submitted successfully!");
@@ -94,7 +85,7 @@ function Ledger() {
   const handleDeleteTransaction = async (transactionId) => {
     try {
       const response = await fetch(
-        `https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/transactions/${transactionId}`,
+        `https://api.spendsense.ca/api/transactions/${transactionId}`,
         {
           method: "DELETE",
           headers: {

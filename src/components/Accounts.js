@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Button, Table, Form, Modal } from "react-bootstrap";
+import { Container, Button, Table, Form, Modal, Card } from "react-bootstrap";
 
 function Accounts() {
   const [accounts, setAccounts] = useState([]);
@@ -16,14 +16,11 @@ function Accounts() {
   }, []);
 
   const fetchAccounts = async () => {
-    const response = await fetch(
-      "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/accounts",
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Assume you store your token in localStorage
-        },
-      }
-    );
+    const response = await fetch("https://api.spendsense.ca/api/accounts", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Assume you store your token in localStorage
+      },
+    });
     const data = await response.json();
     if (response.ok) {
       setAccounts(data);
@@ -32,8 +29,12 @@ function Accounts() {
     }
   };
 
-  const handleShow = (account = { id: "", name: "", balance: "" }) => {
-    setCurrentAccount(account);
+  const handleShow = (account = { _id: "", name: "", balance: "" }) => {
+    setCurrentAccount({
+      id: account._id, // Make sure to set this correctly
+      name: account.name,
+      balance: account.balance,
+    });
     setShowModal(true);
   };
 
@@ -42,8 +43,8 @@ function Accounts() {
   const handleSave = async () => {
     const method = currentAccount.id ? "PATCH" : "POST";
     const url = currentAccount.id
-      ? `https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/accounts/${currentAccount.id}`
-      : "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/accounts";
+      ? `https://api.spendsense.ca/api/accounts/${currentAccount.id}`
+      : "https://api.spendsense.ca/api/accounts";
 
     const response = await fetch(url, {
       method: method,
@@ -65,19 +66,24 @@ function Accounts() {
     }
   };
 
-  const handleDelete = async (accountId) => {
+  const handleDelete = async (id) => {
+    if (!id) {
+      console.log("Error: No ID provided for deletion.");
+      return;
+    }
     const response = await fetch(
-      `https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/accounts/${accountId}`,
+      `https://api.spendsense.ca/api/accounts/${id}`,
       {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Assume you store your token in localStorage
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
 
     if (response.ok) {
-      setAccounts(accounts.filter((account) => account.id !== accountId)); // Update state locally
+      fetchAccounts();
+      setAccounts(accounts.filter((account) => account.id !== id));
     } else {
       console.log("Failed to delete account");
     }
@@ -85,37 +91,48 @@ function Accounts() {
 
   return (
     <Container>
-      <Button onClick={() => handleShow()} className="mb-3">
-        Add Account
-      </Button>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Account Name</th>
-            <th>Balance</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {accounts.map((account) => (
-            <tr key={account.id}>
-              <td>{account.name}</td>
-              <td>${account.balance}</td>
-              <td>
-                <Button variant="secondary" onClick={() => handleShow(account)}>
-                  Edit
-                </Button>{" "}
-                <Button
-                  variant="danger"
-                  onClick={() => handleDelete(account.id)}
-                >
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <Card>
+        <Card.Header>Accounts</Card.Header>
+        <Card.Body>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Account Name</th>
+                <th>Balance</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {accounts.map((account) => (
+                <tr key={account._id}>
+                  <td>{account.name}</td>
+                  <td>${account.balance}</td>
+                  <td className="d-flex flex-column">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      className="mb-2"
+                      onClick={() => handleShow(account)}
+                    >
+                      Edit
+                    </Button>{" "}
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleDelete(account._id)}
+                    >
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <Button onClick={() => handleShow()} className="mb-3">
+            Add Account
+          </Button>
+        </Card.Body>
+      </Card>
 
       <Modal show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>

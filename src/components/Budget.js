@@ -17,14 +17,11 @@ function Budget() {
 
   const fetchExpenses = async () => {
     try {
-      const response = await fetch(
-        "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/expenses",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch("https://api.spendsense.ca/api/expenses", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       if (response.ok) {
         setExpenses(data);
@@ -39,8 +36,8 @@ function Budget() {
   const handleAddOrUpdateExpense = async () => {
     const method = editingId ? "PUT" : "POST";
     const url = editingId
-      ? `https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/expenses/${editingId}`
-      : "https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/expenses";
+      ? `https://api.spendsense.ca/api/expenses/${editingId}`
+      : "https://api.spendsense.ca/api/expenses";
 
     try {
       const response = await fetch(url, {
@@ -88,7 +85,7 @@ function Budget() {
   const handleDelete = async (id) => {
     try {
       const response = await fetch(
-        `https://zh-finance-app-backend-cc570dfa2211.herokuapp.com/api/expenses/${id}`,
+        `https://api.spendsense.ca/api/expenses/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -147,7 +144,6 @@ function Budget() {
                 >
                   Delete
                 </Button>
-                <br></br>
               </td>
             </tr>
           ))}
