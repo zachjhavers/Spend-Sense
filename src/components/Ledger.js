@@ -74,8 +74,8 @@ function Ledger() {
     });
 
     if (response.ok) {
-      console.log("Transaction submitted successfully!");
       fetchTransactions(); // Refresh the list after submission
+      fetchAccounts();
     } else {
       const errorData = await response.json();
       console.log(`Failed to submit transaction: ${errorData.message}`);

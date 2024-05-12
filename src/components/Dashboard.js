@@ -56,7 +56,6 @@ function Dashboard() {
       const timestamp = item.timestamp || item.createdAt;
 
       if (!timestamp) {
-        console.log("Item skipped (no timestamp or createdAt):", item);
         return acc; // Skip this item if no valid timestamp is found
       }
 
@@ -84,10 +83,8 @@ function Dashboard() {
     let currentHeight = 10; // Start placing images 10mm from the top of the page
 
     const captureContent = (id, index = 0) => {
-      console.log("Capturing content for ID:", id); // Log which ID is being processed
       const input = document.getElementById(id);
       if (!input) {
-        console.error("Element not found for ID:", id); // Error if element not found
         return; // Exit if no input found to avoid further errors
       }
 
@@ -376,8 +373,8 @@ function Dashboard() {
   return (
     <Container fluid>
       <Row className="mt-3">
-        <Col md={4}>
-          <Card>
+        <Col md={4} className="d-flex">
+          <Card className="flex-grow-1">
             <Card.Body>
               <Card.Title>Account Balance</Card.Title>
               <Card.Text>
@@ -386,8 +383,8 @@ function Dashboard() {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={4}>
-          <Card>
+        <Col md={4} className="d-flex">
+          <Card className="flex-grow-1">
             <Card.Body>
               <Card.Title>Recent Transactions</Card.Title>
               <Table striped bordered hover size="sm">
@@ -399,7 +396,7 @@ function Dashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {transactions.slice(0, 5).map((transaction) => (
+                  {transactions.slice(0, 10).map((transaction) => (
                     <tr key={transaction._id}>
                       <td>{capitalize(transaction.description)}</td>
                       <td>${transaction.amount.toFixed(2)}</td>
@@ -411,8 +408,8 @@ function Dashboard() {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={4}>
-          <Card>
+        <Col md={4} className="d-flex">
+          <Card className="flex-grow-1">
             <Card.Body>
               <Card.Title>Monthly Budget</Card.Title>
               <Pie data={budgetData} options={{ responsive: true }} />

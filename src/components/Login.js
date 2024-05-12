@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card, Form, Button, Container } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Helmet } from "react-helmet";
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -20,7 +21,6 @@ function Login({ onLogin }) {
       localStorage.setItem("token", data.token);
       onLogin(data.token); // Call the function passed through props
       navigate("/");
-      console.log("Login successful");
     } else {
       console.log("Failed to log in");
     }
@@ -28,6 +28,13 @@ function Login({ onLogin }) {
 
   return (
     <Container className="mt-5 d-flex justify-content-center">
+      <Helmet>
+        <title>Login - Spend Sense</title>
+        <meta
+          name="description"
+          content="Log in to access your Spend Sense dashboard and manage your finances."
+        />
+      </Helmet>
       <Card style={{ width: "24rem" }}>
         <Card.Body>
           <Card.Title>Login</Card.Title>
