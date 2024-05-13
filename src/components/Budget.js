@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Card, Form, Table, Row, Col } from "react-bootstrap";
+import { getSessionToken } from "@descope/react-sdk";
 
 function Budget() {
   const [expenses, setExpenses] = useState([]);
@@ -9,7 +10,8 @@ function Budget() {
     category: "Needs",
     label: "",
   });
-  const [editingId, setEditingId] = useState(null); // Track which expense is being edited
+  const [editingId, setEditingId] = useState(null);
+  const sessionToken = getSessionToken();
 
   useEffect(() => {
     fetchExpenses();
@@ -19,7 +21,8 @@ function Budget() {
     try {
       const response = await fetch("https://api.spendsense.ca/api/expenses", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionToken,
         },
       });
       const data = await response.json();
@@ -44,7 +47,7 @@ function Budget() {
         method: method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: "Bearer " + sessionToken,
         },
         body: JSON.stringify(newExpense),
       });
@@ -63,12 +66,12 @@ function Budget() {
           category: "Needs",
           label: "",
         });
-        setEditingId(null); // Reset editing mode
+        setEditingId(null);
       } else {
         console.log("Failed to save expense");
       }
     } catch (error) {
-      console.error("Save Expense Error: ", error);
+      console.error("Save Expense Error");
     }
   };
 
@@ -89,7 +92,8 @@ function Budget() {
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + sessionToken,
           },
         }
       );
@@ -99,7 +103,7 @@ function Budget() {
         console.log("Failed to delete expense");
       }
     } catch (error) {
-      console.error("Delete Expense Error: ", error);
+      console.error("Delete Expense Error");
     }
   };
 
@@ -132,7 +136,7 @@ function Budget() {
                 <Button
                   variant="primary"
                   size="sm"
-                  className="mb-2" // Adds margin to the bottom of the 'Edit' button
+                  className="mb-2"
                   onClick={() => handleEdit(expense)}
                 >
                   Edit
@@ -200,7 +204,6 @@ function Budget() {
                   onChange={handleInputChange}
                 />
               </Form.Group>
-
               <Button className="mt-4" onClick={handleAddOrUpdateExpense}>
                 {editingId ? "Update Expense" : "Add Expense"}
               </Button>

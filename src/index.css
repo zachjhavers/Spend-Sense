@@ -1,5 +1,6 @@
 /* Navbar Styles */
 .navbar {
+  background-color: #1f80ff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   font-family: "Quicksand", sans-serif;
 }
@@ -8,32 +9,32 @@
 }
 
 .nav-link {
-  color: #ffffff !important; /* Use primary color for links */
-  transition: color 0.3s ease-in-out; /* Smooth transition for color change */
+  color: #ffffff !important;
+  transition: color 0.3s ease-in-out;
 }
 
 .navbar-brand {
-  color: #ffffff !important; /* White color for brand */
-  transition: color 0.3s ease-in-out; /* Smooth transition for brand color */
+  color: #ffffff !important;
+  transition: color 0.3s ease-in-out;
 }
 
 .navbar-brand:hover {
-  color: #ffffff !important; /* Maintain white color on hover */
+  color: #ffffff !important;
 }
 
 /* Card Styles */
 .card {
   margin-top: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: none; /* Remove default border */
-  margin-bottom: 20px; /* Add spacing at the bottom of each card */
-  background-color: #121212; /* Dark background for the card */
+  border: none;
+  margin-bottom: 20px;
+  background-color: #121212;
   font-family: "Quicksand", sans-serif;
   padding: 2%;
 }
 
 .card-title {
-  color: #007bff; /* Primary blue color for titles */
+  color: #007bff;
   padding-bottom: 5%;
   text-align: center;
 }
@@ -46,21 +47,21 @@
 
 .card-body {
   padding: 2rem;
-  color: #cccccc; /* Lighter text for readability on dark background */
+  color: #cccccc;
 }
 
 /* Form Input Styles */
 .form-control {
   border-radius: 0.25rem;
-  border: 1px solid #343a40; /* Darker borders for inputs */
-  background-color: #222222; /* Dark input backgrounds */
-  color: #ffffff; /* White text for contrast */
+  border: 1px solid #343a40;
+  background-color: #222222;
+  color: #ffffff;
   margin-bottom: 5%;
 }
 
 .form-control:focus {
   border-color: #0056b3;
-  box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25); /* Blue glow on focus */
+  box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
 }
 .btn {
   margin-top: 5%;
@@ -71,20 +72,42 @@
 /* Button Styles */
 .btn-primary {
   margin-top: 5%;
-  background-color: #0056b3; /* Slightly darker blue for buttons */
+  background-color: #0056b3;
   border-color: #004085;
-  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out; /* Smooth color transition */
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
 }
 
 .btn-primary:hover {
-  background-color: #003a70; /* Even darker blue on hover */
+  background-color: #003a70;
   border-color: #002244;
 }
 
 .footer-container {
-  text-align: center; /* Center-align the content */
+  margin-top: 5%;
+  text-align: center;
+  padding: 20px 10px; /* Add padding around the entire footer for better spacing */
+  background-color: #f8f9fa; /* Optional: add a background color */
+  border-top: 1px solid #e7e7e7; /* Optional: add a border top for visual separation */
 }
 
 .footer-content {
-  display: inline-block; /* Keep the content in a block */
+  display: block; /* Changed from inline-block to block for stacking */
+  padding: 10px; /* Add padding inside the footer content for spacing */
+}
+
+.dmca-badge img {
+  display: block; /* Ensures the image is displayed as a block, pushing text to a new line */
+  margin: 0 auto 10px; /* Centers the image and adds space below */
+}
+
+#copyRightText {
+  display: block; /* Ensure the text is displayed as a block element */
+  margin-bottom: 10px; /* Adds space below the text */
+}
+
+.placeholder-image {
+  width: 100%;
+  max-width: 25%; /* Sets a maximum size while allowing smaller screens to scale down */
+  height: auto;
+  margin-bottom: 10px;
 }

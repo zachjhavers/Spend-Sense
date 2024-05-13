@@ -8,6 +8,7 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
+import { getSessionToken } from "@descope/react-sdk";
 
 function capitalize(text) {
   return text
@@ -23,6 +24,7 @@ function Ledger() {
   const [amount, setAmount] = useState("");
   const [type, setType] = useState("credit");
   const [description, setDescription] = useState("");
+  const sessionToken = getSessionToken();
 
   useEffect(() => {
     fetchAccounts();
@@ -32,7 +34,8 @@ function Ledger() {
   async function fetchAccounts() {
     const response = await fetch("https://api.spendsense.ca/api/accounts", {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionToken,
       },
     });
     const data = await response.json();
@@ -46,7 +49,8 @@ function Ledger() {
   async function fetchTransactions() {
     const response = await fetch("https://api.spendsense.ca/api/transactions", {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionToken,
       },
     });
     const data = await response.json();
@@ -63,7 +67,7 @@ function Ledger() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: "Bearer " + sessionToken,
       },
       body: JSON.stringify({
         accountId: selectedAccount,
@@ -74,7 +78,7 @@ function Ledger() {
     });
 
     if (response.ok) {
-      fetchTransactions(); // Refresh the list after submission
+      fetchTransactions();
       fetchAccounts();
     } else {
       const errorData = await response.json();
@@ -89,7 +93,8 @@ function Ledger() {
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + sessionToken,
           },
         }
       );
@@ -101,11 +106,11 @@ function Ledger() {
         );
         console.log("Transaction deleted successfully!");
       } else {
-        console.log("Failed to delete transaction.");
+        console.log("Failed to delete transaction");
       }
     } catch (error) {
-      console.error("Error deleting transaction:", error);
-      console.log("Failed to delete transaction.");
+      console.error("Error deleting transaction");
+      console.log("Failed to delete transaction");
     }
   };
 

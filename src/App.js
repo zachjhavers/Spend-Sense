@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,40 +7,25 @@ import {
   Navigate,
 } from "react-router-dom";
 import { Navbar, Nav, Container } from "react-bootstrap";
+import { useSession, useDescope } from "@descope/react-sdk";
 import Login from "./components/Login";
-import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import Accounts from "./components/Accounts";
 import Budget from "./components/Budget";
 import Ledger from "./components/Ledger";
-import UseNavigator from "./components/UseNavigator";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
+const App = () => {
+  const { isAuthenticated, isSessionLoading } = useSession();
+  const descope = useDescope();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-    }
-    setLoading(false); // Set loading to false after checking token
-  }, []);
-
-  const handleLogin = (token) => {
-    localStorage.setItem("token", token);
-    setIsLoggedIn(true);
-  };
+  if (isSessionLoading) {
+    return <div>Loading...</div>;
+  }
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
+    descope.logout();
   };
-
-  if (loading) {
-    return <div>Loading...</div>; // Or any other loading indicator
-  }
 
   return (
     <Router>
@@ -52,7 +37,7 @@ function App() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
-              {isLoggedIn ? (
+              {isAuthenticated ? (
                 <>
                   <Nav.Link as={Link} to="/accounts">
                     Accounts
@@ -76,19 +61,13 @@ function App() {
         <Routes>
           <Route
             path="/login"
-            element={
-              isLoggedIn ? <Navigate to="/" /> : <Login onLogin={handleLogin} />
-            }
+            element={isAuthenticated ? <Navigate to="/" /> : <Login />}
           />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/logout"
-            element={<UseNavigator setIsLoggedIn={setIsLoggedIn} />}
-          />
+          <Route path="/logout" element={<Navigate to="/login" />} />
           <Route
             path="/accounts"
             element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <ProtectedRoute isLoggedIn={isAuthenticated}>
                 <Accounts />
               </ProtectedRoute>
             }
@@ -96,7 +75,7 @@ function App() {
           <Route
             path="/budget"
             element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <ProtectedRoute isLoggedIn={isAuthenticated}>
                 <Budget />
               </ProtectedRoute>
             }
@@ -104,7 +83,7 @@ function App() {
           <Route
             path="/ledger"
             element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <ProtectedRoute isLoggedIn={isAuthenticated}>
                 <Ledger />
               </ProtectedRoute>
             }
@@ -112,7 +91,7 @@ function App() {
           <Route
             path="/"
             element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <ProtectedRoute isLoggedIn={isAuthenticated}>
                 <Dashboard />
               </ProtectedRoute>
             }
@@ -121,6 +100,6 @@ function App() {
       </Container>
     </Router>
   );
-}
+};
 
 export default App;

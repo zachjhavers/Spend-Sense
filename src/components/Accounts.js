@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Button, Table, Form, Modal, Card } from "react-bootstrap";
+import { getSessionToken } from "@descope/react-sdk";
 
 function Accounts() {
   const [accounts, setAccounts] = useState([]);
@@ -9,8 +10,8 @@ function Accounts() {
     name: "",
     balance: "",
   });
+  const sessionToken = getSessionToken();
 
-  // Fetch accounts from the backend on component mount
   useEffect(() => {
     fetchAccounts();
   }, []);
@@ -18,20 +19,21 @@ function Accounts() {
   const fetchAccounts = async () => {
     const response = await fetch("https://api.spendsense.ca/api/accounts", {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // Assume you store your token in localStorage
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionToken,
       },
     });
     const data = await response.json();
     if (response.ok) {
       setAccounts(data);
     } else {
-      console.log("Failed to fetch accounts");
+      console.error("Failed to fetch accounts");
     }
   };
 
   const handleShow = (account = { _id: "", name: "", balance: "" }) => {
     setCurrentAccount({
-      id: account._id, // Make sure to set this correctly
+      id: account._id,
       name: account.name,
       balance: account.balance,
     });
@@ -50,7 +52,7 @@ function Accounts() {
       method: method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // Assume you store your token in localStorage
+        Authorization: "Bearer " + sessionToken,
       },
       body: JSON.stringify({
         name: currentAccount.name,
@@ -59,7 +61,7 @@ function Accounts() {
     });
 
     if (response.ok) {
-      fetchAccounts(); // Re-fetch accounts to update the list
+      fetchAccounts();
       handleClose();
     } else {
       console.log("Failed to save account");
@@ -68,7 +70,7 @@ function Accounts() {
 
   const handleDelete = async (id) => {
     if (!id) {
-      console.log("Error: No ID provided for deletion.");
+      console.log("Error: No ID provided for deletion");
       return;
     }
     const response = await fetch(
@@ -76,7 +78,8 @@ function Accounts() {
       {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionToken,
         },
       }
     );
@@ -115,13 +118,6 @@ function Accounts() {
                       onClick={() => handleShow(account)}
                     >
                       Edit
-                    </Button>{" "}
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleDelete(account._id)}
-                    >
-                      Delete
                     </Button>
                   </td>
                 </tr>

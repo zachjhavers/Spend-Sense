@@ -5,12 +5,15 @@ import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Analytics } from "@vercel/analytics/react";
 import CopyrightFooter from "./components/CopyRightFooter";
+import { AuthProvider } from "@descope/react-sdk";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
-    <CopyrightFooter />
-    <Analytics />
+    <AuthProvider projectId={process.env.REACT_APP_PROJECT_ID}>
+      <App />
+      <CopyrightFooter />
+      <Analytics />
+    </AuthProvider>
   </React.StrictMode>
 );

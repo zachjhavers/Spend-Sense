@@ -1,3 +1,4 @@
+// Imports
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Table } from "react-bootstrap";
 import { Pie } from "react-chartjs-2";
@@ -5,6 +6,7 @@ import { Bar } from "react-chartjs-2";
 import { parseISO, startOfMonth, format } from "date-fns";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { getSessionToken } from "@descope/react-sdk";
 import {
   Chart,
   BarElement,
@@ -15,6 +17,7 @@ import {
   ArcElement,
 } from "chart.js";
 
+// Registering Chart Components
 Chart.register(
   BarElement,
   ArcElement,
@@ -24,6 +27,7 @@ Chart.register(
   LinearScale
 );
 
+// Function To Capatalize First Letter Of Text
 function capitalize(text) {
   return text
     .split(" ")
@@ -31,7 +35,9 @@ function capitalize(text) {
     .join(" ");
 }
 
+// Dashboard Function
 function Dashboard() {
+  // Const Variables For Dashboard Function
   const [accounts, setAccounts] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -45,18 +51,20 @@ function Dashboard() {
   const [selectedMonth, setSelectedMonth] = useState(
     format(startOfMonth(new Date()), "yyyy-MM")
   );
+  const sessionToken = getSessionToken();
 
+  // Const Variables For Month Filtering
   const filteredTransactions = groupedTransactions[selectedMonth] || [];
   const filteredExpenses = groupedExpenses[selectedMonth] || [];
   const filteredAccounts = groupedAccounts[selectedMonth] || [];
 
+  // Function To Group By Month
   const groupDataByMonth = (data) => {
     return data.reduce((acc, item) => {
-      // Attempt to find a valid timestamp from known possible fields
       const timestamp = item.timestamp || item.createdAt;
 
       if (!timestamp) {
-        return acc; // Skip this item if no valid timestamp is found
+        return acc;
       }
 
       try {
@@ -66,13 +74,14 @@ function Dashboard() {
         }
         acc[monthStart].push(item);
       } catch (error) {
-        console.error("Error processing timestamp for item:", item, error);
+        console.error("Error processing timestamp for item");
       }
 
       return acc;
     }, {});
   };
 
+  // Function For Downloading Report
   const downloadCombinedReport = (contentIds, fileName) => {
     const pdf = new jsPDF({
       orientation: "portrait",
@@ -80,32 +89,30 @@ function Dashboard() {
       format: "a4",
     });
 
-    let currentHeight = 10; // Start placing images 10mm from the top of the page
+    let currentHeight = 10;
 
     const captureContent = (id, index = 0) => {
       const input = document.getElementById(id);
       if (!input) {
-        return; // Exit if no input found to avoid further errors
+        return;
       }
 
       html2canvas(input, {
-        scale: 2, // Increasing scale for better resolution
-        useCORS: true, // This can help if your charts load resources over CORS
+        scale: 2,
+        useCORS: true,
       })
         .then((canvas) => {
-          const imgWidth = 170; // Width of the image in the PDF
-          const pageHeight = 83; // Each image should approximately take up one-third of A4's height (about 93mm)
-          let imgHeight = (canvas.height * imgWidth) / canvas.width; // Calculate the proportional height
-
-          // Adjust if the image height is too large for the third of the page
+          const imgWidth = 170;
+          const pageHeight = 83;
+          let imgHeight = (canvas.height * imgWidth) / canvas.width;
           if (imgHeight > pageHeight) {
-            imgHeight = pageHeight; // Adjust height to fit
+            imgHeight = pageHeight;
             const imgWidthAdjusted = (canvas.width * imgHeight) / canvas.height;
             pdf.addImage(
               canvas.toDataURL("image/png"),
               "PNG",
-              (210 - imgWidthAdjusted) / 2, // Center the image horizontally
-              currentHeight, // Start at the current height offset
+              (210 - imgWidthAdjusted) / 2,
+              currentHeight,
               imgWidthAdjusted,
               imgHeight
             );
@@ -113,50 +120,51 @@ function Dashboard() {
             pdf.addImage(
               canvas.toDataURL("image/png"),
               "PNG",
-              (210 - imgWidth) / 2, // Center the image horizontally
-              currentHeight, // Start at the current height offset
+              (210 - imgWidth) / 2,
+              currentHeight,
               imgWidth,
               imgHeight
             );
           }
 
-          currentHeight += imgHeight + 10; // Increase currentHeight by imgHeight plus a 10mm margin
-
-          // Check if there are more IDs to process and enough space on the page
+          currentHeight += imgHeight + 10;
           if (index < contentIds.length - 1 && currentHeight < 280) {
-            // Adjusted for page margins
-            captureContent(contentIds[index + 1], index + 1); // Process the next ID
+            captureContent(contentIds[index + 1], index + 1);
           } else {
             if (index < contentIds.length - 1) {
               pdf.addPage();
-              currentHeight = 10; // Reset current height for new page
+              currentHeight = 10;
               captureContent(contentIds[index + 1], index + 1);
             } else {
-              pdf.save(`${fileName}-${new Date().toISOString()}.pdf`); // Save the PDF after the last element
+              pdf.save(`${fileName}-${new Date().toISOString()}.pdf`);
             }
           }
         })
         .catch((err) => {
-          console.error("Failed to capture element:", err); // Catch and log any error from html2canvas
+          console.error("Failed to capture element");
         });
     };
 
-    captureContent(contentIds[0]); // Start capturing from the first element
+    captureContent(contentIds[0]);
   };
 
+  // Use Effect For Grabbing Data
   useEffect(() => {
     fetchAccounts();
     fetchTransactions();
     fetchExpenses();
   }, []);
 
+  // Use Effect For Grabbing By Month
   useEffect(() => {
     const fetchData = async () => {
-      // Fetch Transactions
       const transactionsResponse = await fetch(
         "https://api.spendsense.ca/api/transactions",
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + sessionToken,
+          },
         }
       );
       if (transactionsResponse.ok) {
@@ -166,11 +174,13 @@ function Dashboard() {
         console.log("Failed to fetch transactions");
       }
 
-      // Fetch Expenses
       const expensesResponse = await fetch(
         "https://api.spendsense.ca/api/expenses",
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + sessionToken,
+          },
         }
       );
       if (expensesResponse.ok) {
@@ -180,24 +190,27 @@ function Dashboard() {
         console.log("Failed to fetch expenses");
       }
 
-      // Fetch Accounts if they have timestamps
       const accountsResponse = await fetch(
         "https://api.spendsense.ca/api/accounts",
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + sessionToken,
+          },
         }
       );
       if (accountsResponse.ok) {
         const accountsData = await accountsResponse.json();
-        setGroupedAccounts(groupDataByMonth(accountsData)); // Assuming accounts have timestamps
+        setGroupedAccounts(groupDataByMonth(accountsData));
       } else {
-        console.log("Failed to fetch accounts");
+        console.error("Failed to fetch accounts");
       }
     };
 
     fetchData();
   }, []);
 
+  // Use Effect For Calculating Total Spent
   useEffect(() => {
     calculateTotalSpent();
   }, [transactions]);
@@ -210,49 +223,56 @@ function Dashboard() {
     setTotalSpent(total);
   };
 
+  // Functions For Fetching User Data
   const fetchAccounts = async () => {
     const response = await fetch("https://api.spendsense.ca/api/accounts", {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Accept: "application/json",
+        Authorization: "Bearer " + sessionToken,
       },
     });
     if (response.ok) {
       const data = await response.json();
       setAccounts(data);
     } else {
-      console.log("Failed to fetch accounts");
+      console.error("Failed to fetch accounts");
     }
   };
 
   const fetchTransactions = async () => {
     const response = await fetch("https://api.spendsense.ca/api/transactions", {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Accept: "application/json",
+        Authorization: "Bearer " + sessionToken,
       },
     });
     if (response.ok) {
       const data = await response.json();
       setTransactions(data);
-      setTotalSpent();
+      // Call setTotalSpent with relevant data if necessary
     } else {
-      console.log("Failed to fetch transactions");
+      console.error("Failed to fetch transactions");
     }
   };
 
   const fetchExpenses = async () => {
     const response = await fetch("https://api.spendsense.ca/api/expenses", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + sessionToken,
+      },
     });
     if (response.ok) {
       const data = await response.json();
       setExpenses(data);
-      calculateTotalExpenses(data);
-      setCategoryTotals(calculateCategoryTotals(data));
-      setMonthlyBudget(calculateTotalExpenses(data));
+      calculateTotalExpenses(data); // Assuming calculateTotalExpenses updates state or similar
+      setCategoryTotals(calculateCategoryTotals(data)); // Same assumption as above
+      setMonthlyBudget(calculateTotalExpenses(data)); // Ensure this is intended to be called here with data
     } else {
-      console.log("Failed to fetch expenses");
+      console.error("Failed to fetch expenses");
     }
   };
+
   const calculateTotalExpenses = (expenses) => {
     const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);
     setTotalExpenses(total);
@@ -260,7 +280,7 @@ function Dashboard() {
 
   const calculateCategoryTotals = (expenses) => {
     const totals = expenses.reduce((acc, expense) => {
-      const category = expense.category.toLowerCase(); // assuming categories are 'Needs' or 'Wants'
+      const category = expense.category.toLowerCase();
       acc[category] = acc[category]
         ? acc[category] + expense.amount
         : expense.amount;
@@ -270,7 +290,7 @@ function Dashboard() {
     return totals;
   };
 
-  // Aggregate debit and credit totals
+  // Functions For Generating Chart Data
   const totals = transactions.reduce(
     (acc, transaction) => {
       if (transaction.type === "debit") {
@@ -297,7 +317,7 @@ function Dashboard() {
   };
 
   const debitCreditOptions = {
-    indexAxis: "y", // Set the horizontal bar graph
+    indexAxis: "y",
     elements: {
       bar: {
         borderWidth: 2,
@@ -372,48 +392,31 @@ function Dashboard() {
 
   return (
     <Container fluid>
-      <Row className="mt-3">
-        <Col md={4} className="d-flex">
-          <Card className="flex-grow-1">
+      <Row>
+        <Col xs={12}>
+          <Card>
             <Card.Body>
-              <Card.Title>Account Balance</Card.Title>
-              <Card.Text>
-                <Pie data={data} options={options} id="accountBalanceChart" />
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4} className="d-flex">
-          <Card className="flex-grow-1">
-            <Card.Body>
-              <Card.Title>Recent Transactions</Card.Title>
-              <Table striped bordered hover size="sm">
-                <thead>
-                  <tr>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Type</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transactions.slice(0, 10).map((transaction) => (
-                    <tr key={transaction._id}>
-                      <td>{capitalize(transaction.description)}</td>
-                      <td>${transaction.amount.toFixed(2)}</td>
-                      <td>{capitalize(transaction.type)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4} className="d-flex">
-          <Card className="flex-grow-1">
-            <Card.Body>
-              <Card.Title>Monthly Budget</Card.Title>
-              <Pie data={budgetData} options={{ responsive: true }} />
-              <Card.Text>${totalExpenses.toFixed(2)}</Card.Text>
+              <Card.Title>Month</Card.Title>
+              <div className="d-flex flex-column">
+                <div className="mb-3">
+                  {Object.keys(groupedTransactions).length > 0 ? (
+                    <select
+                      id="monthSelector"
+                      className="form-select"
+                      onChange={(e) => setSelectedMonth(e.target.value)}
+                      value={selectedMonth}
+                    >
+                      {Object.keys(groupedTransactions).map((month) => (
+                        <option key={month} value={month}>
+                          {format(new Date(month + "-01"), "MMMM yyyy")}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="text-center p-3">Not enough data yet.</div>
+                  )}
+                </div>
+              </div>
             </Card.Body>
           </Card>
         </Col>
@@ -422,38 +425,58 @@ function Dashboard() {
         <Col xs={12}>
           <Card>
             <Card.Body>
-              <Card.Title>Month</Card.Title>
-              <div className="d-flex flex-column">
-                <div className="mb-3">
-                  <select
-                    id="monthSelector"
-                    className="form-select"
-                    onChange={(e) => setSelectedMonth(e.target.value)}
-                    value={selectedMonth}
-                  >
-                    {Object.keys(groupedTransactions).map((month) => (
-                      <option key={month} value={month}>
-                        {format(new Date(month + "-01"), "MMMM yyyy")}
-                      </option>
+              <Card.Title>Recent Transactions</Card.Title>
+              {transactions.length > 0 ? (
+                <Table responsive="sm" striped bordered hover size="sm">
+                  <thead>
+                    <tr>
+                      <th>Description</th>
+                      <th>Amount</th>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transactions.slice(0, 10).map((transaction) => (
+                      <tr key={transaction._id}>
+                        <td>{capitalize(transaction.description)}</td>
+                        <td>${transaction.amount.toFixed(2)}</td>
+                        <td>{capitalize(transaction.type)}</td>
+                      </tr>
                     ))}
-                  </select>
-                </div>
-                <button
-                  className="btn btn-primary"
-                  onClick={() =>
-                    downloadCombinedReport(
-                      [
-                        "accountBalanceChart",
-                        "debitCreditChart",
-                        "budgetComparisonChart",
-                      ],
-                      "Monthly Report"
-                    )
-                  }
-                >
-                  Generate Report
-                </button>
-              </div>
+                  </tbody>
+                </Table>
+              ) : (
+                <div className="text-center p-3">No transactions yet.</div>
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      <Row className="mt-3">
+        <Col md={6} className="d-flex">
+          <Card className="flex-grow-1">
+            <Card.Body>
+              <Card.Title>Account Balance</Card.Title>
+              {data.labels.length > 0 ? (
+                <Pie data={data} options={options} id="accountBalanceChart" />
+              ) : (
+                <div className="text-center p-3">No data available.</div>
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6} className="d-flex">
+          <Card className="flex-grow-1">
+            <Card.Body>
+              <Card.Title>Monthly Budget</Card.Title>
+              {totalExpenses > 0 ? (
+                <>
+                  <Pie data={budgetData} options={{ responsive: true }} />
+                  <Card.Text>${totalExpenses.toFixed(2)}</Card.Text>
+                </>
+              ) : (
+                <div className="text-center p-3">No data available.</div>
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -462,11 +485,15 @@ function Dashboard() {
         <Card>
           <Card.Body>
             <Card.Title>Debit vs Credit</Card.Title>
-            <Bar
-              data={debitCreditData}
-              options={debitCreditOptions}
-              id="debitCreditChart"
-            />
+            {transactions.length > 0 ? (
+              <Bar
+                data={debitCreditData}
+                options={debitCreditOptions}
+                id="debitCreditChart"
+              />
+            ) : (
+              <div className="text-center p-3">No data available.</div>
+            )}
           </Card.Body>
         </Card>
       </Col>
@@ -474,11 +501,15 @@ function Dashboard() {
         <Card>
           <Card.Body>
             <Card.Title>Budget vs Expenses</Card.Title>
-            <Bar
-              data={budgetComparisonData}
-              options={budgetComparisonOptions}
-              id="budgetComparisonChart"
-            />
+            {totalExpenses > 0 || totals.debit > 0 ? (
+              <Bar
+                data={budgetComparisonData}
+                options={budgetComparisonOptions}
+                id="budgetComparisonChart"
+              />
+            ) : (
+              <div className="text-center p-3">No data available.</div>
+            )}
           </Card.Body>
         </Card>
       </Col>
