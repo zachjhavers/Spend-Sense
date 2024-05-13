@@ -110,7 +110,6 @@ function Ledger() {
       }
     } catch (error) {
       console.error("Error deleting transaction");
-      console.log("Failed to delete transaction");
     }
   };
 
@@ -198,7 +197,7 @@ function Ledger() {
                       <td>{capitalize(transaction.type)}</td>
                       <td className="d-flex flex-column">
                         <Button
-                          variant="danger"
+                          variant="primary"
                           size="sm"
                           onClick={() =>
                             handleDeleteTransaction(transaction._id)
@@ -206,7 +205,6 @@ function Ledger() {
                         >
                           Delete
                         </Button>
-                        <br></br>
                       </td>
                     </tr>
                   ))}

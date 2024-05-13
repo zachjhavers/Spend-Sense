@@ -119,6 +119,14 @@ function Accounts() {
                     >
                       Edit
                     </Button>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      className="mb-2"
+                      onClick={() => handleDelete(account._id)}
+                    >
+                      Delete
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -166,7 +174,7 @@ function Accounts() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleClose}>
             Close
           </Button>
           <Button variant="primary" onClick={handleSave}>

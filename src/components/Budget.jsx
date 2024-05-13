@@ -142,7 +142,7 @@ function Budget() {
                   Edit
                 </Button>
                 <Button
-                  variant="danger"
+                  variant="primary"
                   size="sm"
                   onClick={() => handleDelete(expense._id)}
                 >
