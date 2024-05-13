@@ -116,44 +116,46 @@ function Budget() {
     <Card className="mt-4">
       <Card.Header>Monthly Budget</Card.Header>
       <Card.Body>
-        <Table striped bordered hover size="xs" className="mt-3">
-          <thead>
-            <tr>
-              <th>Description</th>
-              <th>Amount</th>
-              <th>Category</th>
-              <th>Label</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.map((expense) => (
-              <tr key={expense._id}>
-                <td>{expense.description}</td>
-                <td>${expense.amount.toFixed(2)}</td>
-                <td>{expense.category}</td>
-                <td>{expense.label || "No Label"}</td>
-                <td className="d-flex flex-column">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    className="mb-2"
-                    onClick={() => handleEdit(expense)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => handleDelete(expense._id)}
-                  >
-                    Delete
-                  </Button>
-                </td>
+        <div class="table-responsive">
+          <Table striped bordered hover size="sm" className="mt-3">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Label</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {expenses.map((expense) => (
+                <tr key={expense._id}>
+                  <td>{expense.description}</td>
+                  <td>${expense.amount.toFixed(2)}</td>
+                  <td>{expense.category}</td>
+                  <td>{expense.label || "No Label"}</td>
+                  <td className="d-flex flex-column">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      className="mb-2"
+                      onClick={() => handleEdit(expense)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => handleDelete(expense._id)}
+                    >
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
         <Form>
           <Row>
             <Col md={6}>
