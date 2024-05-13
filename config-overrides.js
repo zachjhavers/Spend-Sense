@@ -1,15 +1,16 @@
+const { override, addWebpackPlugin } = require("customize-cra");
 const TerserPlugin = require("terser-webpack-plugin");
 
-module.exports = function override(config, env) {
-  config.optimization.minimizer = [
+module.exports = override(
+  addWebpackPlugin(
     new TerserPlugin({
       terserOptions: {
         compress: {
-          drop_console: true,
+          drop_console: true, // This will remove all console.* calls
         },
-        mangle: true,
+        mangle: true, // Reduce names of local variables to usually a single letter.
       },
-    }),
-  ];
-  return config;
-};
+      extractComments: false, // Do not extract comments to a separate file
+    })
+  )
+);
