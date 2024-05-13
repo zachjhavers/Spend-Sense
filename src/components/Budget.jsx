@@ -116,7 +116,7 @@ function Budget() {
     <Card className="mt-4">
       <Card.Header>Monthly Budget</Card.Header>
       <Card.Body>
-        <Table striped bordered hover>
+        <Table striped bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
               <th>Description</th>
