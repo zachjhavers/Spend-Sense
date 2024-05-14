@@ -1,11 +1,12 @@
 // Importing Required Libraries
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Container, Row, Col, Card, Table } from "react-bootstrap";
 import { Pie } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
 import { parseISO, startOfMonth, format } from "date-fns";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import useDeepCompareEffect from "use-deep-compare-effect";
 import { getSessionToken } from "@descope/react-sdk";
 import {
   Chart,
@@ -52,6 +53,9 @@ function Dashboard() {
     format(startOfMonth(new Date()), "yyyy-MM")
   );
   const sessionToken = getSessionToken();
+  const [advice, setAdvice] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Const Variables For Month Filtering
   const filteredTransactions = groupedTransactions[selectedMonth] || [];
@@ -293,6 +297,50 @@ function Dashboard() {
     return totals;
   };
 
+  const formatAdvice = (adviceText) => {
+    // Split and filter empty lines if necessary
+    return adviceText.split("\n").filter((line) => line.trim() !== "");
+  };
+
+  // Function For Fetching Financial Advice
+  const fetchFinancialAdvice = async () => {
+    setIsLoading(true);
+    setError("");
+
+    // Prepare the data to send
+    const financialData = {
+      accounts,
+      transactions: filteredTransactions,
+      expenses: filteredExpenses,
+    };
+
+    try {
+      const response = await fetch("https://api.spendsense.ca/api/advice", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionToken,
+        },
+        body: JSON.stringify(financialData), // Send the financial data as JSON
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAdvice(formatAdvice(data.message.content)); // Ensure to capture the correct data key for advice
+      } else {
+        throw new Error(`Failed to fetch financial advice: ${response.status}`);
+      }
+    } catch (err) {
+      setError("Failed to fetch financial advice. Please try again later.");
+      console.error(err.message);
+    }
+    setIsLoading(false);
+  };
+
+  // Ensure this function is only called once or based on specific dependencies
+  useDeepCompareEffect(() => {
+    fetchFinancialAdvice();
+  }, [filteredAccounts, filteredTransactions, filteredExpenses]);
+
   // Functions For Generating Chart Data
   const totals = transactions.reduce(
     (acc, transaction) => {
@@ -400,6 +448,19 @@ function Dashboard() {
     },
   };
 
+  function InsightsCard({ isLoading, error, advice }) {
+    // Function to format text with selective bold
+    const formatTextWithBold = (text) => {
+      const parts = text.split(/(\*\*[^*]+\*\*)/g); // Split text into parts, capturing bold segments
+      return parts.map((part, index) => {
+        if (part.startsWith("**") && part.endsWith("**")) {
+          return <strong key={index}>{part.slice(2, -2)}</strong>;
+        }
+        return part;
+      });
+    };
+  }
+
   // Render
   return (
     <Container fluid>
@@ -427,6 +488,34 @@ function Dashboard() {
                     <div className="text-center p-3">Not enough data yet.</div>
                   )}
                 </div>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12}>
+          <Card>
+            <Card.Body>
+              <Card.Title>Insights</Card.Title>
+              <div className="d-flex flex-column">
+                {isLoading ? (
+                  <div>Loading advice...</div>
+                ) : error ? (
+                  <div style={{ color: "red" }}>{error}</div>
+                ) : advice.length > 0 ? (
+                  advice.map((item, index) => (
+                    <p key={index}>
+                      {item.includes("**") ? (
+                        <strong>{item.replace(/\**\**/g, "")}</strong>
+                      ) : (
+                        item
+                      )}
+                    </p>
+                  ))
+                ) : (
+                  <div>No Insights Yet.</div>
+                )}
               </div>
             </Card.Body>
           </Card>
