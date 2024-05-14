@@ -6,7 +6,7 @@ import { Bar } from "react-chartjs-2";
 import { parseISO, startOfMonth, format } from "date-fns";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import useDeepCompareEffect from "use-deep-compare-effect";
+import Advisor from "./Advisor";
 import { getSessionToken } from "@descope/react-sdk";
 import {
   Chart,
@@ -297,50 +297,6 @@ function Dashboard() {
     return totals;
   };
 
-  const formatAdvice = (adviceText) => {
-    // Split and filter empty lines if necessary
-    return adviceText.split("\n").filter((line) => line.trim() !== "");
-  };
-
-  // Function For Fetching Financial Advice
-  const fetchFinancialAdvice = async () => {
-    setIsLoading(true);
-    setError("");
-
-    // Prepare the data to send
-    const financialData = {
-      accounts: accounts,
-      transactions: transactions,
-      expenses: expenses,
-    };
-
-    try {
-      const response = await fetch("https://api.spendsense.ca/api/advice", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionToken,
-        },
-        body: JSON.stringify(financialData), // Send the financial data as JSON
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setAdvice(formatAdvice(data.message.content)); // Ensure to capture the correct data key for advice
-      } else {
-        throw new Error(`Failed to fetch financial advice: ${response.status}`);
-      }
-    } catch (err) {
-      setError("Failed to fetch financial advice. Please try again later.");
-      console.error(err.message);
-    }
-    setIsLoading(false);
-  };
-
-  // Ensure this function is only called once or based on specific dependencies
-  useDeepCompareEffect(() => {
-    fetchFinancialAdvice();
-  }, [expenses, transactions, accounts]);
-
   // Functions For Generating Chart Data
   const totals = transactions.reduce(
     (acc, transaction) => {
@@ -482,30 +438,7 @@ function Dashboard() {
       </Row>
       <Row>
         <Col xs={12}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Insights</Card.Title>
-              <div className="d-flex flex-column">
-                {isLoading ? (
-                  <div>Loading advice...</div>
-                ) : error ? (
-                  <div style={{ color: "red" }}>{error}</div>
-                ) : advice.length > 0 ? (
-                  advice.map((item, index) => (
-                    <p key={index}>
-                      {item.includes("**") ? (
-                        <strong>{item.replace(/\*\*/g, "")}</strong>
-                      ) : (
-                        item
-                      )}
-                    </p>
-                  ))
-                ) : (
-                  <div>No Insights Yet.</div>
-                )}
-              </div>
-            </Card.Body>
-          </Card>
+          <Advisor />
         </Col>
       </Row>
       <Row>
