@@ -448,19 +448,6 @@ function Dashboard() {
     },
   };
 
-  function InsightsCard({ isLoading, error, advice }) {
-    // Function to format text with selective bold
-    const formatTextWithBold = (text) => {
-      const parts = text.split(/(\*\*[^*]+\*\*)/g); // Split text into parts, capturing bold segments
-      return parts.map((part, index) => {
-        if (part.startsWith("**") && part.endsWith("**")) {
-          return <strong key={index}>{part.slice(2, -2)}</strong>;
-        }
-        return part;
-      });
-    };
-  }
-
   // Render
   return (
     <Container fluid>
@@ -507,7 +494,7 @@ function Dashboard() {
                   advice.map((item, index) => (
                     <p key={index}>
                       {item.includes("**") ? (
-                        <strong>{item.replace(/\**\**/g, "")}</strong>
+                        <strong>{item.replace(/\*\*/g, "")}</strong>
                       ) : (
                         item
                       )}
