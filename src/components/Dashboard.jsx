@@ -309,9 +309,9 @@ function Dashboard() {
 
     // Prepare the data to send
     const financialData = {
-      accounts,
-      transactions: filteredTransactions,
-      expenses: filteredExpenses,
+      accounts: accounts,
+      transactions: transactions,
+      expenses: expenses,
     };
 
     try {
@@ -339,7 +339,7 @@ function Dashboard() {
   // Ensure this function is only called once or based on specific dependencies
   useDeepCompareEffect(() => {
     fetchFinancialAdvice();
-  }, [filteredAccounts, filteredTransactions, filteredExpenses]);
+  }, [expenses, transactions, accounts]);
 
   // Functions For Generating Chart Data
   const totals = transactions.reduce(
