@@ -1,3 +1,4 @@
+// Import Necessary Modules
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -15,18 +16,24 @@ import Budget from "./components/Budget";
 import Ledger from "./components/Ledger";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+// App Component
 const App = () => {
+  // Is Authenticated
   const { isAuthenticated, isSessionLoading } = useSession();
+  // Use Descope
   const descope = useDescope();
 
+  // If Session Is Loading
   if (isSessionLoading) {
     return <div>Loading...</div>;
   }
 
+  // Handle Logout
   const handleLogout = () => {
     descope.logout();
   };
 
+  // Render
   return (
     <Router>
       <Navbar bg="primary" expand="lg">

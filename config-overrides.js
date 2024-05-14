@@ -1,16 +1,23 @@
+// Define the custom configuration for the webpack build process
 const { override, addWebpackPlugin } = require("customize-cra");
 const TerserPlugin = require("terser-webpack-plugin");
 
+// Override the default webpack configuration
 module.exports = override(
   addWebpackPlugin(
+    // Minify the output of the webpack build process
     new TerserPlugin({
+      // Customize the terser options
       terserOptions: {
         compress: {
-          drop_console: true, // This will remove all console.* calls
+          // Remove console.log statements from the output
+          drop_console: true,
         },
-        mangle: true, // Reduce names of local variables to usually a single letter.
+        // Mangle the output to reduce the size of the output files
+        mangle: true,
       },
-      extractComments: false, // Do not extract comments to a separate file
+      // Do not extract comments from the output
+      extractComments: false,
     })
   )
 );

@@ -1,3 +1,4 @@
+// Importing necessary libraries and modules
 import React, { useState, useEffect } from "react";
 import {
   Form,
@@ -10,6 +11,7 @@ import {
 } from "react-bootstrap";
 import { getSessionToken } from "@descope/react-sdk";
 
+// Capitalize the first letter of each word
 function capitalize(text) {
   return text
     .split(" ")
@@ -17,6 +19,7 @@ function capitalize(text) {
     .join(" ");
 }
 
+// Ledger component
 function Ledger() {
   const [accounts, setAccounts] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -26,11 +29,13 @@ function Ledger() {
   const [description, setDescription] = useState("");
   const sessionToken = getSessionToken();
 
+  // Fetch accounts and transactions
   useEffect(() => {
     fetchAccounts();
     fetchTransactions();
   }, []);
 
+  // Fetch accounts
   async function fetchAccounts() {
     const response = await fetch("https://api.spendsense.ca/api/accounts", {
       headers: {
@@ -46,6 +51,7 @@ function Ledger() {
     }
   }
 
+  // Fetch transactions
   async function fetchTransactions() {
     const response = await fetch("https://api.spendsense.ca/api/transactions", {
       headers: {
@@ -61,6 +67,7 @@ function Ledger() {
     }
   }
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     const response = await fetch("https://api.spendsense.ca/api/transactions", {
@@ -86,6 +93,7 @@ function Ledger() {
     }
   };
 
+  // Handle delete transaction
   const handleDeleteTransaction = async (transactionId) => {
     try {
       const response = await fetch(
@@ -113,6 +121,7 @@ function Ledger() {
     }
   };
 
+  // Render Ledger component
   return (
     <Container className="mt-4">
       <Row>
@@ -160,8 +169,8 @@ function Ledger() {
                         onChange={(e) => setType(e.target.value)}
                         required
                       >
-                        <option value="credit">Credit</option>
-                        <option value="debit">Debit</option>
+                        <option value="credit">Income / Debt</option>
+                        <option value="debit">Expense</option>
                       </Form.Control>
                     </Form.Group>
                   </Col>
@@ -194,7 +203,11 @@ function Ledger() {
                     <tr key={transaction._id}>
                       <td>{transaction.description}</td>
                       <td>${transaction.amount.toFixed(2)}</td>
-                      <td>{capitalize(transaction.type)}</td>
+                      <td>
+                        {transaction.type === "debit"
+                          ? "Expense"
+                          : "Income / Debt"}
+                      </td>
                       <td className="d-flex flex-column">
                         <Button
                           variant="primary"

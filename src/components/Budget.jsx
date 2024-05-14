@@ -1,7 +1,9 @@
+// Import necessary libraries
 import React, { useState, useEffect } from "react";
 import { Button, Card, Form, Table, Row, Col } from "react-bootstrap";
 import { getSessionToken } from "@descope/react-sdk";
 
+// Budget component
 function Budget() {
   const [expenses, setExpenses] = useState([]);
   const [newExpense, setNewExpense] = useState({
@@ -10,13 +12,17 @@ function Budget() {
     category: "Needs",
     label: "",
   });
+
+  // Get session token
   const [editingId, setEditingId] = useState(null);
   const sessionToken = getSessionToken();
 
+  // Fetch expenses
   useEffect(() => {
     fetchExpenses();
   }, []);
 
+  // Fetch expenses
   const fetchExpenses = async () => {
     try {
       const response = await fetch("https://api.spendsense.ca/api/expenses", {
@@ -36,6 +42,7 @@ function Budget() {
     }
   };
 
+  // Add or update expense
   const handleAddOrUpdateExpense = async () => {
     const method = editingId ? "PUT" : "POST";
     const url = editingId
@@ -75,6 +82,7 @@ function Budget() {
     }
   };
 
+  // Edit expense
   const handleEdit = (expense) => {
     setNewExpense({
       description: expense.description,
@@ -85,6 +93,7 @@ function Budget() {
     setEditingId(expense._id);
   };
 
+  // Delete expense
   const handleDelete = async (id) => {
     try {
       const response = await fetch(
@@ -107,11 +116,13 @@ function Budget() {
     }
   };
 
+  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewExpense({ ...newExpense, [name]: value });
   };
 
+  // Render component
   return (
     <Card className="mt-4">
       <Card.Header>Monthly Budget</Card.Header>

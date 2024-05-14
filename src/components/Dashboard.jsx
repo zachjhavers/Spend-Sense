@@ -1,4 +1,4 @@
-// Imports
+// Importing Required Libraries
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Table } from "react-bootstrap";
 import { Pie } from "react-chartjs-2";
@@ -215,6 +215,7 @@ function Dashboard() {
     calculateTotalSpent();
   }, [transactions]);
 
+  // Function For Calculating Total Spent
   const calculateTotalSpent = () => {
     const total = transactions.reduce(
       (acc, t) => (t.type === "debit" ? acc + t.amount : acc),
@@ -249,12 +250,12 @@ function Dashboard() {
     if (response.ok) {
       const data = await response.json();
       setTransactions(data);
-      // Call setTotalSpent with relevant data if necessary
     } else {
       console.error("Failed to fetch transactions");
     }
   };
 
+  // Function For Fetching Expenses
   const fetchExpenses = async () => {
     const response = await fetch("https://api.spendsense.ca/api/expenses", {
       headers: {
@@ -265,19 +266,21 @@ function Dashboard() {
     if (response.ok) {
       const data = await response.json();
       setExpenses(data);
-      calculateTotalExpenses(data); // Assuming calculateTotalExpenses updates state or similar
-      setCategoryTotals(calculateCategoryTotals(data)); // Same assumption as above
-      setMonthlyBudget(calculateTotalExpenses(data)); // Ensure this is intended to be called here with data
+      calculateTotalExpenses(data);
+      setCategoryTotals(calculateCategoryTotals(data));
+      setMonthlyBudget(calculateTotalExpenses(data));
     } else {
       console.error("Failed to fetch expenses");
     }
   };
 
+  // Function For Calculating Total Expenses
   const calculateTotalExpenses = (expenses) => {
     const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);
     setTotalExpenses(total);
   };
 
+  // Function For Calculating Category Totals
   const calculateCategoryTotals = (expenses) => {
     const totals = expenses.reduce((acc, expense) => {
       const category = expense.category.toLowerCase();
@@ -303,8 +306,9 @@ function Dashboard() {
     { debit: 0, credit: 0 }
   );
 
+  // Data For Debit vs Credit Chart
   const debitCreditData = {
-    labels: ["Outflow", "Inflow"],
+    labels: ["Expense", "Income"],
     datasets: [
       {
         label: "Dollar Value",
@@ -316,6 +320,7 @@ function Dashboard() {
     ],
   };
 
+  // Options For Debit vs Credit Chart
   const debitCreditOptions = {
     indexAxis: "y",
     elements: {
@@ -331,6 +336,7 @@ function Dashboard() {
     },
   };
 
+  // Data For Account Balance Chart
   const data = {
     labels: accounts.map((account) => account.name),
     datasets: [
@@ -343,6 +349,7 @@ function Dashboard() {
     ],
   };
 
+  // Options For Account Balance Chart
   const options = {
     responsive: true,
     plugins: {
@@ -352,6 +359,7 @@ function Dashboard() {
     },
   };
 
+  // Data For Budget Chart
   const budgetData = {
     labels: ["Needs", "Wants"],
     datasets: [
@@ -363,11 +371,12 @@ function Dashboard() {
     ],
   };
 
+  // Data For Budget Comparison Chart
   const budgetComparisonData = {
     labels: ["Monthly Budget", "Total Spent"],
     datasets: [
       {
-        label: "Budget vs Expenses",
+        label: "Budget vs Total Spent",
         data: [totalExpenses.toFixed(2), totals.debit],
         backgroundColor: ["#4BC0C0", "#FF6384"],
         borderColor: ["#4BC0C0", "#FF6384"],
@@ -376,6 +385,7 @@ function Dashboard() {
     ],
   };
 
+  // Options For Budget Comparison Chart
   const budgetComparisonOptions = {
     scales: {
       y: {
@@ -390,6 +400,7 @@ function Dashboard() {
     },
   };
 
+  // Render
   return (
     <Container fluid>
       <Row>
@@ -440,7 +451,11 @@ function Dashboard() {
                       <tr key={transaction._id}>
                         <td>{capitalize(transaction.description)}</td>
                         <td>${transaction.amount.toFixed(2)}</td>
-                        <td>{capitalize(transaction.type)}</td>
+                        <td>
+                          {transaction.type === "debit"
+                            ? "Expense"
+                            : "Income / Debt"}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -484,7 +499,7 @@ function Dashboard() {
       <Col xs={12}>
         <Card>
           <Card.Body>
-            <Card.Title>Debit vs Credit</Card.Title>
+            <Card.Title>Income vs Expenses</Card.Title>
             {transactions.length > 0 ? (
               <Bar
                 data={debitCreditData}
@@ -500,7 +515,7 @@ function Dashboard() {
       <Col xs={12}>
         <Card>
           <Card.Body>
-            <Card.Title>Budget vs Expenses</Card.Title>
+            <Card.Title>Budget vs Total Spent</Card.Title>
             {totalExpenses > 0 || totals.debit > 0 ? (
               <Bar
                 data={budgetComparisonData}

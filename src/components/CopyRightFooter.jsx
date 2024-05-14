@@ -1,5 +1,7 @@
+// Import necessary libraries
 import React from "react";
 
+// CopyrightFooter component
 const CopyrightFooter = () => {
   return (
     <footer className="footer-container">

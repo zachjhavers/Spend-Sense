@@ -1,7 +1,9 @@
+// Import necessary libraries
 import React, { useState, useEffect } from "react";
 import { Container, Button, Table, Form, Modal, Card } from "react-bootstrap";
 import { getSessionToken } from "@descope/react-sdk";
 
+// Accounts component
 function Accounts() {
   const [accounts, setAccounts] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -10,12 +12,16 @@ function Accounts() {
     name: "",
     balance: "",
   });
+
+  // Get session token
   const sessionToken = getSessionToken();
 
+  // Fetch accounts
   useEffect(() => {
     fetchAccounts();
   }, []);
 
+  // Fetch accounts
   const fetchAccounts = async () => {
     const response = await fetch("https://api.spendsense.ca/api/accounts", {
       headers: {
@@ -31,6 +37,7 @@ function Accounts() {
     }
   };
 
+  // Show modal
   const handleShow = (account = { _id: "", name: "", balance: "" }) => {
     setCurrentAccount({
       id: account._id,
@@ -40,8 +47,10 @@ function Accounts() {
     setShowModal(true);
   };
 
+  // Close modal
   const handleClose = () => setShowModal(false);
 
+  // Save account
   const handleSave = async () => {
     const method = currentAccount.id ? "PATCH" : "POST";
     const url = currentAccount.id
@@ -68,6 +77,7 @@ function Accounts() {
     }
   };
 
+  // Delete account
   const handleDelete = async (id) => {
     if (!id) {
       console.log("Error: No ID provided for deletion");
@@ -92,6 +102,7 @@ function Accounts() {
     }
   };
 
+  // Render
   return (
     <Container>
       <Card>

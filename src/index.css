@@ -1,26 +1,33 @@
+/* Navbar Style */
 .navbar {
   background-color: #1f80ff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   font-family: "Quicksand", sans-serif;
 }
+
+/* Container */
 .container {
   font-family: "Quicksand", sans-serif;
 }
 
+/* Nav Link Styles */
 .nav-link {
   color: #ffffff !important;
   transition: color 0.3s ease-in-out;
 }
 
+/* Nav Brand Style */
 .navbar-brand {
   color: #ffffff !important;
   transition: color 0.3s ease-in-out;
 }
 
+/* Nav Link Hover Style */
 .navbar-brand:hover {
   color: #ffffff !important;
 }
 
+/* Card Style */
 .card {
   margin-top: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -31,23 +38,27 @@
   padding: 2%;
 }
 
+/* Card Title Style */
 .card-title {
-  color: #007bff;
+  color: #007bff !important;
   padding-bottom: 5%;
   text-align: center;
 }
 
+/* Card Text Style */
 .card-text {
   padding-top: 5%;
   padding-bottom: 5%;
   text-align: center;
 }
 
+/* Card Body Style */
 .card-body {
   padding: 2rem;
   color: #cccccc;
 }
 
+/* Form Control Style */
 .form-control {
   border-radius: 0.25rem;
   border: 1px solid #343a40;
@@ -56,16 +67,20 @@
   margin-bottom: 5%;
 }
 
+/* Form Control Focus Style */
 .form-control:focus {
   border-color: #0056b3;
   box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
 }
+
+/* Btn Style */
 .btn {
   margin-top: 5%;
   margin-bottom: 5%;
   width: 100%;
 }
 
+/* Btn Primary Style */
 .btn-primary {
   margin-top: 5%;
   background-color: #0056b3;
@@ -73,11 +88,13 @@
   transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
 }
 
+/* Btn Primary Hover Style */
 .btn-primary:hover {
   background-color: #003a70;
   border-color: #002244;
 }
 
+/* Footer Container Style */
 .footer-container {
   margin-top: 5%;
   text-align: center;
@@ -86,24 +103,20 @@
   border-top: 1px solid #e7e7e7;
 }
 
+/* Footer Content Style */
 .footer-content {
   display: block;
   padding: 10px;
 }
 
+/* DMCA Badge */
 .dmca-badge img {
   display: block;
   margin: 0 auto 10px;
 }
 
+/* Copy Right Text */
 #copyRightText {
   display: block;
-  margin-bottom: 10px;
-}
-
-.placeholder-image {
-  width: 100%;
-  max-width: 25%;
-  height: auto;
   margin-bottom: 10px;
 }
