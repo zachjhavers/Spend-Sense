@@ -51,7 +51,18 @@ function Advisor() {
             error: "",
             advice: [],
           });
-          fetchFinancialAdvice(expenses, accounts, transactions);
+          // Check if there is data in all categories before fetching advice
+          if (expenses.length && accounts.length && transactions.length) {
+            fetchFinancialAdvice(expenses, accounts, transactions);
+          } else {
+            setData((prev) => ({
+              ...prev,
+              isLoading: false,
+              advice: [
+                "Ensure all data categories are populated to receive financial advice.",
+              ],
+            }));
+          }
         }
       } catch (error) {
         if (isMounted)
@@ -79,9 +90,8 @@ function Advisor() {
         headers: HEADERS(sessionToken),
         body: JSON.stringify(financialData),
       });
-      const data = await response.json();
-
       if (response.ok) {
+        const data = await response.json();
         setData((prev) => ({
           ...prev,
           advice: formatAdvice(data.message.content),
@@ -106,7 +116,7 @@ function Advisor() {
           {data.isLoading ? (
             <div>Loading advice...</div>
           ) : data.error ? (
-            <div style={{ color: "red" }}>{data.error}</div>
+            <div>Loading advice...</div>
           ) : data.advice.length > 0 ? (
             data.advice.map((item, index) => (
               <p key={index}>

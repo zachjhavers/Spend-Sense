@@ -169,8 +169,9 @@ function Ledger() {
                         onChange={(e) => setType(e.target.value)}
                         required
                       >
-                        <option value="credit">Income / Debt</option>
+                        <option value="credit">Income</option>
                         <option value="debit">Expense</option>
+                        <option value="debt">Debt</option>
                       </Form.Control>
                     </Form.Group>
                   </Col>
@@ -206,7 +207,9 @@ function Ledger() {
                       <td>
                         {transaction.type === "debit"
                           ? "Expense"
-                          : "Income / Debt"}
+                          : transaction.type === "credit"
+                          ? "Income"
+                          : "Debt"}
                       </td>
                       <td className="d-flex flex-column">
                         <Button

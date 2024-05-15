@@ -1,8 +1,19 @@
+/* Keyframes for fade-in effect */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Navbar Style */
 .navbar {
   background-color: #1f80ff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   font-family: "Quicksand", sans-serif;
+  margin-bottom: 2%;
 }
 
 /* Container */
@@ -36,12 +47,13 @@
   background-color: #121212;
   font-family: "Quicksand", sans-serif;
   padding: 2%;
+  align-content: center !important;
 }
 
 /* Card Title Style */
 .card-title {
   color: #007bff !important;
-  padding-bottom: 5%;
+  padding-bottom: 2%;
   text-align: center;
 }
 
@@ -56,6 +68,7 @@
 .card-body {
   padding: 2rem;
   color: #cccccc;
+  animation: fadeIn 1s ease-out !important;
 }
 
 /* Form Control Style */
