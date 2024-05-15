@@ -51,11 +51,14 @@ function BudgetChart() {
   }, [sessionToken]);
 
   const calculateCategoryTotals = useCallback((expenses) => {
+    const initialTotals = { needs: 0, wants: 0 };
     return expenses.reduce((acc, expense) => {
       const category = expense.category.toLowerCase();
-      acc[category] = (acc[category] || 0) + expense.amount;
+      if (acc[category] !== undefined) {
+        acc[category] += expense.amount;
+      }
       return acc;
-    }, {});
+    }, initialTotals);
   }, []);
 
   // Data For Budget Chart
@@ -75,7 +78,7 @@ function BudgetChart() {
     <Card>
       <Card.Body>
         <Card.Title>Monthly Budget</Card.Title>
-        {totalExpenses > 0 ? (
+        {expenses.length > 0 ? (
           <>
             <Pie data={budgetData} options={{ responsive: true }} />
             <Card.Text>Total Expenses: ${totalExpenses.toFixed(2)}</Card.Text>
