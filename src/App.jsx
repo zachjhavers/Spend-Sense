@@ -53,7 +53,7 @@ const App = () => {
                     Budget
                   </Nav.Link>
                   <Nav.Link as={Link} to="/ledger">
-                    Ledger
+                    Transactions
                   </Nav.Link>
                   <Nav.Link as={Link} to="/logout" onClick={handleLogout}>
                     Logout

@@ -27,6 +27,7 @@ function Ledger() {
   const [amount, setAmount] = useState("");
   const [type, setType] = useState("credit");
   const [description, setDescription] = useState("");
+  const [currentEditingId, setCurrentEditingId] = useState(null);
   const sessionToken = getSessionToken();
 
   // Fetch accounts and transactions
@@ -67,30 +68,58 @@ function Ledger() {
     }
   }
 
-  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await fetch("https://api.spendsense.ca/api/transactions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionToken,
-      },
-      body: JSON.stringify({
-        accountId: selectedAccount,
-        amount: Number(amount),
-        type,
-        description,
-      }),
-    });
+    const url = currentEditingId
+      ? `https://api.spendsense.ca/api/transactions/${currentEditingId}`
+      : "https://api.spendsense.ca/api/transactions";
+    const method = currentEditingId ? "PUT" : "POST";
 
-    if (response.ok) {
-      fetchTransactions();
-      fetchAccounts();
-    } else {
-      const errorData = await response.json();
-      console.log(`Failed to submit transaction: ${errorData.message}`);
+    try {
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionToken,
+        },
+        body: JSON.stringify({
+          accountId: selectedAccount,
+          amount: Number(amount),
+          type,
+          description,
+        }),
+      });
+
+      if (response.ok) {
+        fetchTransactions();
+        resetForm();
+      } else {
+        const errorData = await response.json();
+        console.error(
+          `Failed to ${currentEditingId ? "update" : "submit"} transaction: ${
+            errorData.message
+          }`
+        );
+      }
+    } catch (error) {
+      console.error("Error submitting transaction", error);
     }
+  };
+
+  const handleEdit = (transaction) => {
+    setSelectedAccount(transaction.accountId);
+    setAmount(transaction.amount.toString());
+    setType(transaction.type);
+    setDescription(transaction.description);
+    setCurrentEditingId(transaction._id);
+  };
+
+  const resetForm = () => {
+    setSelectedAccount("");
+    setAmount("");
+    setType("credit");
+    setDescription("");
+    setCurrentEditingId(null);
   };
 
   // Handle delete transaction
@@ -187,7 +216,9 @@ function Ledger() {
                   </Col>
                 </Row>
                 <Button type="submit" className="mt-2">
-                  Submit Transaction
+                  {currentEditingId
+                    ? "Update Transaction"
+                    : "Submit Transaction"}
                 </Button>
               </Form>
               <Table striped bordered hover size="sm" className="mt-3">
@@ -220,6 +251,13 @@ function Ledger() {
                           }
                         >
                           Delete
+                        </Button>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => handleEdit(transaction)}
+                        >
+                          Edit
                         </Button>
                       </td>
                     </tr>
