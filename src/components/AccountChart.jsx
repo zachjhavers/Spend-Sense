@@ -74,7 +74,6 @@ function AccountChart() {
     labels: accounts.map((account) => account.name),
     datasets: [
       {
-        label: "Account Balances",
         data: accounts.map((account) => account.balance),
         backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
         hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
@@ -88,6 +87,13 @@ function AccountChart() {
     plugins: {
       legend: {
         position: "top",
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return tooltipItem.label + ": $" + tooltipItem.raw.toFixed(2);
+          },
+        },
       },
     },
   };

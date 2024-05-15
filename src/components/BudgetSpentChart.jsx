@@ -67,7 +67,6 @@ function BudgetSpentChart() {
     labels: ["Monthly Budget", "Total Spent"],
     datasets: [
       {
-        label: "Budget vs Total Spent",
         data: [monthlyBudget, totalExpenses],
         backgroundColor: ["#36A2EB", "#FF6384"],
         hoverBackgroundColor: ["#36A2EB", "#FF6384"],
@@ -80,6 +79,13 @@ function BudgetSpentChart() {
     plugins: {
       legend: {
         position: "top",
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return tooltipItem.label + ": $" + tooltipItem.raw.toFixed(2);
+          },
+        },
       },
     },
   };

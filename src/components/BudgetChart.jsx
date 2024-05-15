@@ -73,6 +73,22 @@ function BudgetChart() {
     ],
   };
 
+  const doughnutOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return tooltipItem.label + ": $" + tooltipItem.raw.toFixed(2);
+          },
+        },
+      },
+    },
+  };
+
   // Render component
   return (
     <Card>
@@ -80,7 +96,7 @@ function BudgetChart() {
         <Card.Title>Monthly Budget</Card.Title>
         {expenses.length > 0 ? (
           <>
-            <Doughnut data={budgetData} options={{ responsive: true }} />
+            <Doughnut data={budgetData} options={doughnutOptions} />
             <Card.Text>Total Expenses: ${totalExpenses.toFixed(2)}</Card.Text>
           </>
         ) : (

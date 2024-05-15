@@ -60,7 +60,6 @@ function IncomeExpensesChart() {
       labels: ["Income", "Expenses", "Debt"],
       datasets: [
         {
-          label: "Income vs Expenses vs Debt",
           data: [credits, debits, debts],
           backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56"],
           hoverBackgroundColor: ["#36A2EB", "#FF6384", "#FFCE56"],
@@ -76,6 +75,13 @@ function IncomeExpensesChart() {
     plugins: {
       legend: {
         position: "top",
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return tooltipItem.label + ": $" + tooltipItem.raw.toFixed(2);
+          },
+        },
       },
     },
   };
