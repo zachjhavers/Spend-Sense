@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Card } from "react-bootstrap";
 import { getSessionToken } from "@descope/react-sdk";
-import { Pie } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 
 // Constants
 const API_URL = "https://api.spendsense.ca/api";
@@ -99,7 +99,7 @@ function AccountChart() {
         <Card.Title>Accounts</Card.Title>
         {data.labels.length > 0 ? (
           <>
-            <Pie data={data} options={options} id="accountBalanceChart" />
+            <Doughnut data={data} options={options} id="accountBalanceChart" />
             <Card.Text>Total Balance: ${totalBalance.toFixed(2)}</Card.Text>
           </>
         ) : (
