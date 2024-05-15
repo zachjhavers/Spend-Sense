@@ -112,7 +112,7 @@ function Advisor() {
     <Card>
       <Card.Body>
         <Card.Title>Financial Advisor</Card.Title>
-        <div className="d-flex flex-column">
+        <div className="d-flex flex-column text-center p-3">
           {data.isLoading ? (
             <div>Loading advice...</div>
           ) : data.error ? (
