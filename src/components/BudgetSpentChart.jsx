@@ -48,10 +48,12 @@ function BudgetSpentChart() {
           (acc, budget) => acc + budget.amount,
           0
         );
-        const totalExpensesCalculated = expensesData.reduce(
-          (acc, expense) => acc + expense.amount,
-          0
-        );
+        const totalExpensesCalculated = expensesData
+          .filter(
+            (expense) => expense.type === "debit" || expense.type === "debt"
+          )
+          .reduce((acc, filteredExpense) => acc + filteredExpense.amount, 0);
+
         setMonthlyBudget(monthlyBudgetTotal);
         setTotalExpenses(totalExpensesCalculated);
       } else {

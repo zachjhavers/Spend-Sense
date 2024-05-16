@@ -43,7 +43,6 @@ function AccountChart() {
       }
     } catch (error) {
       console.error(error.message);
-      // Optionally update the UI to show an error message
     }
   };
 
@@ -63,9 +62,9 @@ function AccountChart() {
   // Calculate the total balance of all accounts, subtracting debt accounts
   const totalBalance = accounts.reduce((acc, account) => {
     if (isDebtAccount(account.name)) {
-      return acc - account.balance; // Subtract debt account balances
+      return acc - account.balance;
     } else {
-      return acc + account.balance; // Add regular account balances
+      return acc + account.balance;
     }
   }, 0);
 

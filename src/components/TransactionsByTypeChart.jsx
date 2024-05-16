@@ -52,7 +52,7 @@ function TransactionsByTypeChart() {
   // Calculate the sums for each transaction type
   const sumByType = useCallback((transactions) => {
     const sums = transactions.reduce((acc, transaction) => {
-      const typeKey = capitalize(transaction.type); // Capitalize each transaction type
+      const typeKey = capitalize(transaction.type); 
       acc[typeKey] = (acc[typeKey] || 0) + transaction.amount;
       return acc;
     }, {});
@@ -68,9 +68,9 @@ function TransactionsByTypeChart() {
         label: "Transactions by Type",
         data: Object.values(transactionTypeSums),
         backgroundColor: [
-          "#36A2EB", // Credit
-          "#FF6384", // Debit
-          "#FFCE56", // Debt
+          "#36A2EB", 
+          "#FF6384", 
+          "#FFCE56", 
         ],
         hoverBackgroundColor: ["#36A2EB", "#FF6384", "#FFCE56"],
       },
